@@ -2,58 +2,89 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-
+#include <list>
 using namespace std;
   
-typedef pair <int, int> IntegerPair;
+typedef pair <int, int> intPair;
 
-struct Graph{
-    int V, E;
-    bool directed = false;
+// definindo a estrtutura do grafo
+// sera usada matriz de adjacencia
+// cada elemento da matriz sera um pair
+// cada pair possuira a estrutura (vertice destino, peso)
+// tambem serao usadas arestas no formato (peso(v1,v2))
+class Grafo{
+    int nV; // numero de vertices
+    list<intPair> *adjacentes; // matriz de adjacencia
+    vector< pair<int, intPair> > arestas;
+    list<intPair> resultado;
+    int pesoArvore;
 
-    vector< pair<int, IntegerPair> > edges;
-  
-    Graph(int V, int E, int directed){
-        this->V = V;
-        this->E = E;
-        this->directed = directed;
-    }
-  
-    void addEdge(int u, int v, int w){
-        edges.push_back({w, {u, v}});
+    public:
 
-        if(directed)
-            edges.push_back({w, {v, u}});
-    }
+    Grafo(int n);
+
+    void adicionarAresta(int v1, int v2, int peso);
   
-    int kruskalMST();
+    void kruskal();
+
+    void imprimirResultado();
 };
 
+// definindo o construtor
+Grafo::Grafo(int n){ 
+    this->nV = n;
+    this->adjacentes = new list<intPair>[n];
+}
+
+// definindo adicao de aresta
+void Grafo::adicionarAresta(int v1, int v2, int peso){
+    this->adjacentes[v1].push_back(make_pair(v2,peso));
+    this->adjacentes[v2].push_back(make_pair(v1,peso));
+    this->arestas.push_back({peso, {v1, v2}});
+}
+
+// funcao para imprimir o resultado
+void Grafo::imprimirResultado(){
+    cout << "A arvore geradora minima possui seguintes arestas:" << endl;
+
+    list<intPair>::iterator i;
+    for(i = this->resultado.begin(); i != this->resultado.end(); i++){
+        cout << "(" << (*i).first << "," << (*i).second << ")" << endl;
+    }
+
+    cout << "\nPeso da arvore geradora minima:" << endl;
+    cout << this->pesoArvore << endl;
+}
+
+// union find usado para representar os conjuntos conexos
 struct UnionFind{
 
-    int *parent, *size;
+    int *pai, *size;
     int n;
   
-    UnionFind(int n){
+    // construtor
+    UnionFind(int n){ 
         
-        this->n = n;
-        this->parent = new int[n+1];
-        this->size = new int[n+1];
-  
-        for (int i = 0; i <= n; i++){
+        this->n = n; 
+        this->pai = new int[n]; 
+        this->size = new int[n];
 
-            this->size[i] = 0;
-            this->parent[i] = i;
+        
+        for (int i = 0; i < n; i++){
+            this->size[i] = 1;
+            this->pai[i] = i;
         }
     }
   
-    int find(int u){
-        
-        if (u != parent[u])
-            parent[u] = find(parent[u]);
-        return parent[u];
+    // funcao find recursiva
+    int find(int u){        
+        if (u != pai[u])
+            pai[u] = find(pai[u]);
+        return pai[u];
     }
-  
+    
+    // funcao union com heuristica de tamanhos
+    // sempre adiciona a menor arvore na maior
     void _union(int x, int y){
 
         int xRoot = find(x);
@@ -61,74 +92,78 @@ struct UnionFind{
 
         if(xRoot == yRoot) return;
   
-        if (size[xRoot] < size[yRoot]){
+        if (size[xRoot] >= size[yRoot]){
+           pai[yRoot] = xRoot;
 
-            int aux = xRoot;
-            xRoot= yRoot;
-            yRoot= aux;
-        } 
-
-        parent[yRoot] = xRoot;
-        size[xRoot] += size[yRoot];
-    }
-};
-  
-int Graph::kruskalMST()
-{
-    int weight = 0;
-  
-    sort(edges.begin(), edges.end());
- 
-    UnionFind uf(V);
- 
-    vector< pair<int, IntegerPair> >::iterator it;
-
-    for (it=edges.begin(); it!=edges.end(); it++){
-
-        int u = it->second.first;
-        int v = it->second.second;
-  
-        int set_u = uf.find(u);
-        int set_v = uf.find(v);
-  
-        if (set_u != set_v){
-
-            cout << u << " - " << v << endl;
-  
-            weight += it->first;
-  
-            uf._union(set_u, set_v);
+           if(size[xRoot] == size[yRoot]){
+               size[xRoot] ++;
+           } 
+        }
+        else{
+            pai[xRoot] = yRoot;
         }
     }
-  
-    return weight;
+};
+
+// algoritmo de kruskal  
+void Grafo::kruskal(){
+
+    // inicializa o peso da arvore
+    int pesoTotal = 0;
+
+    // ordena o conjunto de arestas
+    sort(arestas.begin(), arestas.end());
+ 
+    //cria a union find para as componenetes conexas
+    UnionFind uf(nV);
+ 
+    // itera no conjunto de arestas
+    vector< pair<int, intPair> >::iterator it;
+    for (it=arestas.begin(); it!=arestas.end(); it++){
+
+        int u = it->second.first; // primeiro vertice da aresta
+        int v = it->second.second; // segundo vertice da aresta
+
+        // verifica a qual componente conexa os vertices pertencem
+        int componente_u = uf.find(u);
+        int componente_v = uf.find(v);
+
+        // se os vertices pertencerem a componenetes diferentes
+        // significa que nao ha formacao de ciclos
+        // logo adiciona-se a aresta no conjunto solucao as componenetes sao unidas
+        if (componente_u != componente_v){
+            pesoTotal += it->first; // incrementa o peso total da arvore
+            this->resultado.push_back(make_pair(u,v)); // adiciona aresta (u,v) na solucao
+            uf._union(componente_u, componente_v); // uniao das componentes
+        }
+    }
+
+    this->pesoArvore = pesoTotal;  
 }
   
 int main(){
 
-    int V = 9, E = 14;
+    int n_de_vertices = 9;
 
-    Graph g(V, E, true);
+    Grafo g(n_de_vertices);
   
-    g.addEdge(0, 1, 14);
-    g.addEdge(0, 7, 8);
-    g.addEdge(1, 2, 3);
-    g.addEdge(1, 7, 11);
-    g.addEdge(2, 3, 7);
-    g.addEdge(2, 8, 12);
-    g.addEdge(2, 5, 24);
-    g.addEdge(3, 4, 9);
-    g.addEdge(3, 5, 1);
-    g.addEdge(4, 5, 10);
-    g.addEdge(5, 6, 2);
-    g.addEdge(6, 7, 1);
-    g.addEdge(6, 8, 6);
-    g.addEdge(7, 8, 9);
+    g.adicionarAresta(0, 1, 4);
+    g.adicionarAresta(0, 7, 8);
+    g.adicionarAresta(1, 2, 8);
+    g.adicionarAresta(1, 7, 11);
+    g.adicionarAresta(2, 3, 7);
+    g.adicionarAresta(2, 8, 2);
+    g.adicionarAresta(2, 5, 4);
+    g.adicionarAresta(3, 4, 9);
+    g.adicionarAresta(3, 5, 14);
+    g.adicionarAresta(4, 5, 10);
+    g.adicionarAresta(5, 6, 2);
+    g.adicionarAresta(6, 7, 1);
+    g.adicionarAresta(6, 8, 6);
+    g.adicionarAresta(7, 8, 7);
   
-    cout << "Edges of MST are: \n";
-    int mst_wt = g.kruskalMST();
-  
-    cout << "\nWeight of MST is: " << mst_wt;
-  
+    g.kruskal();
+    g.imprimirResultado();
+
     return 0;
 }
