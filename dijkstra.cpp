@@ -1,105 +1,144 @@
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <algorithm>
-#include <queue>
-
-#define MAX 101
-const int inf = 1e9;
-
+// incluindo funcionalidades da biblioteca padrao
+# include <iostream>
+# include <vector>
+# include <queue>
+# include <utility>
+# include <list>
+# include <iterator>
 using namespace std;
+#define infinito 9999999999999
+typedef pair<int,int> intPair;
 
-struct Graph{
+// definindo a estrtutura do grafo
+// sera usada matriz de adjacencia
+// cada elemento da matriz sera um pair
+// cada pair possuira a estrutura (vertice destino, peso)
+// tambem serao usadas arestas no formato (peso(v1,v2))
+class Grafo{
+    int nV; // numero de vertices
+    list<intPair> *adjacentes; // matriz de adjacencia
+    vector< pair<int, intPair> > arestas; //arestas
+    int origem;
+    vector<int> distancias;
 
-    int V, E;
-    bool directed = false;
-    int cost[MAX];
-    
-    vector<pair<int, int> > edges[MAX];
+    public:
 
-    Graph(int V, int E, int directed){
-        this->V = V;
-        this->E = E;
-        this->directed = directed;
-    }
-  
-    void addEdge(int u, int v, int w){
-        edges[u].push_back({v, w});
+    Grafo(int n);
 
-        if(directed)
-            edges[v].push_back({u, w});
-    }
+    void adicionarAresta(int v1, int v2, int peso);
 
-    int dijkstra(int source, int target);
+    void dijkstra(int origem);
+
+    void imprimirResultado();
 };
 
-int Graph::dijkstra(int source, int target){
-    // Setando as distâncias para infinito
-	for (int i = 1; i < MAX; ++i) cost[i] = inf;
+// definindo o construtor
+Grafo::Grafo(int n){ 
+    this->nV = n;
+    this->adjacentes = new list<intPair>[n];
+}
 
-	priority_queue <pair<int, int> > pq;
+// definindo adicao de aresta
+void Grafo::adicionarAresta(int v1, int v2, int peso){
+    this->adjacentes[v1].push_back(make_pair(v2,peso));
+    this->adjacentes[v2].push_back(make_pair(v1,peso));
+    this->arestas.push_back({peso, {v1, v2}});
+}
+
+// funcao que imprime o resultado do algoritmo
+void Grafo::imprimirResultado(){
+    cout << "Distancias minimas a partir da origem" << endl;
+    cout << "Vertice de origem: " << this->origem << endl;
     
-    // Setando o custo do nó inicial para ele mesmo com 0
-	cost[source] = 0; 
-    // Adicionando o nó inicial na fila de prioridade
-    pq.push({source, cost[source]});
-	
+    for(int i = 0; i < this->nV; i++){
+        if(i != this->origem){
+            cout << "Destino: " << i << " ---- Distancia minima: " << this->distancias[i] << endl;
+        }
+    }
+}
 
-	while(!pq.empty()){
-        // Pega o primeiro valor da fila
-		int u = pq.top().first; 
+// definindo o algoritmo de Prim
+void Grafo::dijkstra(int origem){
 
-        // Remove-o da fila
-        pq.pop();
+    // inicializa o vetor de distancias
+    vector<int> distancia(this->nV, infinito);
 
-        // Percorre todos os nós adjacentes a u
+    // inicializa o custo da origem como 0
+    distancia[origem] = 0;
 
-        vector<pair<int, int> >::iterator it;
+    // por padrao as filas de prioridade sao heaps em C++
+    //cria heap minima ordenada pelos pesos dos vertices
+    priority_queue<intPair,vector<intPair>,greater<intPair>> heapMin; 
 
-		for (it=edges[u].begin(); it!=edges[u].end(); it++){
+    // cria vetor que indica se um vertice esta na arvore ou nao
+    vector<bool> visitado(this->nV, false);
 
-            int w = it->second;
-            int v = it->first;
+    // adiciona a origem na heap
+    heapMin.push(make_pair(distancia[origem],origem));
 
-            // Se o custo atual de source ate o nó u somado com
-            // o custo do peso w entre u,v
-            // For menor que o custo de source até v, então atualize o custo de source ate v para
-            // Custo de u + peso de u até v e adicione v na fila de prioridade.
-            
-            if(cost[u] + w < cost[v]){
-                cost[v] = cost[u] + w;
-                pq.push({v, cost[v]});
-            }
-		}
+    // contador de vertices visitados
+    int quantidade_visitados = 0;
+
+    // enquanto a heap n estiver vazia continua o loop
+    while(!heapMin.empty() && quantidade_visitados < this->nV){
         
-	}
+        // seleciona o vertice de menor custo
+        intPair elemento = heapMin.top();
+        int v = elemento.second;
 
-	return cost[target];
+        // retira o elemento selecionado acima da heap
+        heapMin.pop();
+
+        //checa se v ja foi visitado
+        if(visitado[v]){
+            continue; // se sim pula o vertice repetido
+        }
+
+        visitado[v] = true;
+        quantidade_visitados ++;
+
+        // itera sobre a lista de adjacentes de v
+        list<intPair>::iterator i;
+        for(i = this->adjacentes[v].begin(); i != this->adjacentes[v].end(); i++){
+            
+            // le os valores do elemento da lista
+            int vizinho = (*i).first;
+            int peso = (*i).second;
+
+            
+            if(!visitado[vizinho] && distancia[vizinho]>distancia[v]+peso){
+                distancia[vizinho] = distancia[v]+peso;
+                heapMin.push(make_pair(distancia[vizinho],vizinho));
+            }
+        }
+    }
+
+    this->distancias = distancia;
+    this->origem = origem;
 }
 
-int main()
-{
-    int V = 9, E = 14;
-    Graph g(V, E, true);
-  
-    // Criando o grafo
-    g.addEdge(0, 1, 4);
-    g.addEdge(0, 7, 8);
-    g.addEdge(1, 2, 8);
-    g.addEdge(1, 7, 11);
-    g.addEdge(2, 3, 7);
-    g.addEdge(2, 8, 2);
-    g.addEdge(2, 5, 4);
-    g.addEdge(3, 4, 9);
-    g.addEdge(3, 5, 14);
-    g.addEdge(4, 5, 10);
-    g.addEdge(5, 6, 2);
-    g.addEdge(6, 7, 1);
-    g.addEdge(6, 8, 6);
-    g.addEdge(7, 8, 7);
+int main(){
+    int n_de_vertices = 9;
+    
+    Grafo g(n_de_vertices);
+ 
+    g.adicionarAresta(0, 1, 4);
+    g.adicionarAresta(0, 7, 8);
+    g.adicionarAresta(1, 2, 8);
+    g.adicionarAresta(1, 7, 11);
+    g.adicionarAresta(2, 3, 7);
+    g.adicionarAresta(2, 8, 2);
+    g.adicionarAresta(2, 5, 4);
+    g.adicionarAresta(3, 4, 9);
+    g.adicionarAresta(3, 5, 14);
+    g.adicionarAresta(4, 5, 10);
+    g.adicionarAresta(5, 6, 2);
+    g.adicionarAresta(6, 7, 1);
+    g.adicionarAresta(6, 8, 6);
+    g.adicionarAresta(7, 8, 7);
 
-	// Chamando dijkstra para o grafo G com nó inicial 1 e final 7.
-	cout << g.dijkstra(1, 7);
+    g.dijkstra(0);
+    g.imprimirResultado();
 
-	return 0;
-}
+    return 0;
+};
