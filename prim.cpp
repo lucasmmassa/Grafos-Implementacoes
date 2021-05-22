@@ -13,10 +13,13 @@ typedef pair<int,int> intPair;
 // sera usada matriz de adjacencia
 // cada elemento da matriz sera um pair
 // cada pair possuira a estrutura (vertice destino, peso)
+// tambem serao usadas arestas no formato (peso(v1,v2))
 class Grafo{
     int nV; // numero de vertices
     list<intPair> *adjacentes; // matriz de adjacencia
+    vector< pair<int, intPair> > arestas; //arestas
     vector<int> resultado;
+    vector<int> pesos;
 
     public:
 
@@ -39,17 +42,23 @@ Grafo::Grafo(int n){
 void Grafo::adicionarAresta(int v1, int v2, int peso){
     this->adjacentes[v1].push_back(make_pair(v2,peso));
     this->adjacentes[v2].push_back(make_pair(v1,peso));
+    this->arestas.push_back({peso, {v1, v2}});
 }
 
 // funcao que imprime o resultado do algoritmo
 void Grafo::imprimirResultado(){
-    printf("A arvore geradora minima possui seguintes arestas:\n");
-
+    cout << "A arvore geradora minima possui seguintes arestas:" << endl;
+    
+    int pesoTotal = 0;
     for(int i = 0; i < this->nV; i++){
         if(this->resultado[i] != -1){
-            printf("(%d,%d)\n", resultado[i], i);
+            pesoTotal += this->pesos[i];
+            cout << "(" << resultado[i] << "," << i << ")" << endl;
         }
     }
+
+    cout << "\nPeso da arvore geradora minima:" << endl;
+        cout << pesoTotal << endl;
 }
 
 // definindo o algoritmo de Prim
@@ -98,7 +107,7 @@ void Grafo::prim(){
         list<intPair>::iterator i;
         for(i = this->adjacentes[v].begin(); i != this->adjacentes[v].end(); i++){
             
-            // le os valoresdo elemento da lista
+            // le os valores do elemento da lista
             int vizinho = (*i).first;
             int peso = (*i).second;
 
@@ -114,6 +123,7 @@ void Grafo::prim(){
     }
 
     this->resultado = anterior;
+    this->pesos = custo;
 }
 
 int main(){
