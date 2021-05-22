@@ -86,8 +86,11 @@ void Grafo::prim(){
     // adiciona a origem na heap
     heapMin.push(make_pair(custo[origem],origem));
 
-    // enquanto a heap n estiver vazia continua o loop
-    while(!heapMin.empty()){
+    // contador para a quantidade de vertices ja visitados
+    int visitados = 0;
+
+    // enquanto a heap nao estiver vazia continua o loop
+    while(!heapMin.empty() && visitados < this->nV){
         
         // seleciona o vertice de menor custo
         intPair elemento = heapMin.top();
@@ -102,6 +105,8 @@ void Grafo::prim(){
         }
 
         pertence[v] = true;
+
+        visitados ++;
 
         // itera sobre a lista de adjacentes de v
         list<intPair>::iterator i;
