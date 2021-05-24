@@ -1,5 +1,6 @@
 // incluindo funcionalidades da biblioteca padrao
 # include <iostream>
+# include <fstream>
 # include <vector>
 # include <queue>
 # include <utility>
@@ -118,24 +119,19 @@ void Grafo::dijkstra(int origem){
 }
 
 int main(){
-    int n_de_vertices = 9;
-    
+    int n_de_vertices, n_arestas, u,v,c;
+
+    ifstream arquivo;
+    arquivo.open("data.txt");
+
+    arquivo >> n_de_vertices >> n_arestas;
+
     Grafo g(n_de_vertices);
- 
-    g.adicionarAresta(0, 1, 4);
-    g.adicionarAresta(0, 7, 8);
-    g.adicionarAresta(1, 2, 8);
-    g.adicionarAresta(1, 7, 11);
-    g.adicionarAresta(2, 3, 7);
-    g.adicionarAresta(2, 8, 2);
-    g.adicionarAresta(2, 5, 4);
-    g.adicionarAresta(3, 4, 9);
-    g.adicionarAresta(3, 5, 14);
-    g.adicionarAresta(4, 5, 10);
-    g.adicionarAresta(5, 6, 2);
-    g.adicionarAresta(6, 7, 1);
-    g.adicionarAresta(6, 8, 6);
-    g.adicionarAresta(7, 8, 7);
+    
+    while (n_arestas--){
+        arquivo >> u >> v >> c;
+        g.adicionarAresta(u-1, v-1, c);
+    }
 
     g.dijkstra(0);
     g.imprimirResultado();
