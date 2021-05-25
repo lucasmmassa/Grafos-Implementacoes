@@ -73,12 +73,14 @@ bool Grafo::bfs(int **fluxo, int s, int t, int parente[]){
 
         for (int v = 0; v < this->nV; v++){
             if(visitado[v] == false && fluxo[u][v] > 0){
+
+                parente[v] = u;
+
                 if(v==t){
-                    parente[v] = u;
                     return true;
                 }
+
                 fila.push(v);
-                parente[v] = u;
                 visitado[v] = true;
             }
         }
@@ -112,11 +114,10 @@ int Grafo::ford_fulkerson(int s, int t){
     for(int i = 0; i < nV; i++){
         for(j = this->adjacentes[i].begin(); j != this->adjacentes[i].end(); j++){
             fluxo[i][(*j).first] = (*j).second;
-            fluxo[(*j).first][i] = (*j).second;
         }
     }
-    int parente[nV];
 
+    int parente[nV];
 
     while(bfs(fluxo, s, t, parente)){
 
@@ -155,7 +156,7 @@ int main(){
         g.adicionarAresta(u-1, v-1, c);
     }
     
-    cout << g.ford_fulkerson(0,n_de_vertices-1) << endl;
+    cout << "Fluxo maximo: " << g.ford_fulkerson(0,n_de_vertices-1) << endl;
 
     return 0;
 };
