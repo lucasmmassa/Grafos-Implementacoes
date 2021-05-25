@@ -23,6 +23,7 @@ class Grafo{
 
     int nV; // numero de vertices
     list<intPair> *adjacentes; // matriz de adjacencia
+    int resultado;
 
     public:
 
@@ -34,7 +35,7 @@ class Grafo{
 
     bool bfs(int **fluxo, int s, int t, int parent[]);
 
-    int ford_fulkerson(int s, int t);
+    void ford_fulkerson(int s, int t);
 
     void imprimirResultado();
 };
@@ -57,7 +58,7 @@ void Grafo::setAdjacente(list<intPair> *adjacentes){
 
 bool Grafo::bfs(int **fluxo, int s, int t, int parente[]){
 
-    bool visitado[nV];
+    bool visitado[this->nV];
 
     for (int i = 0; i < nV; ++i) visitado[i] = false;
 
@@ -92,11 +93,11 @@ bool Grafo::bfs(int **fluxo, int s, int t, int parente[]){
 
 // funcao que imprime o resultado do algoritmo
 void Grafo::imprimirResultado(){
-    
+    cout << "Fluxo maximo: " << this->resultado << endl;
 }
 
 // definindo a função ford_fulkerson
-int Grafo::ford_fulkerson(int s, int t){
+void Grafo::ford_fulkerson(int s, int t){
 
     int **fluxo = new int *[nV];
     int fluxo_max = 0;
@@ -117,7 +118,7 @@ int Grafo::ford_fulkerson(int s, int t){
         }
     }
 
-    int parente[nV];
+    int parente[this->nV];
 
     while(bfs(fluxo, s, t, parente)){
 
@@ -137,7 +138,7 @@ int Grafo::ford_fulkerson(int s, int t){
         fluxo_max += fluxo_caminho;
     }
 
-    return fluxo_max;
+    this->resultado = fluxo_max;
 }
 
 int main(){
@@ -155,8 +156,9 @@ int main(){
         arquivo >> u >> v >> c;
         g.adicionarAresta(u-1, v-1, c);
     }
-    
-    cout << "Fluxo maximo: " << g.ford_fulkerson(0,n_de_vertices-1) << endl;
 
+    g.ford_fulkerson(0,n_de_vertices-1);
+    g.imprimirResultado();
+    
     return 0;
 };
