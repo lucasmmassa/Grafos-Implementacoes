@@ -7,7 +7,7 @@
 # include <list>
 # include <iterator>
 using namespace std;
-#define infinito 9999999999999
+#define infinito 999999999
 typedef pair<int,int> intPair;
 
 // definindo a estrtutura do grafo
@@ -49,11 +49,11 @@ void Grafo::adicionarAresta(int v1, int v2, int peso){
 // funcao que imprime o resultado do algoritmo
 void Grafo::imprimirResultado(){
     cout << "Distancias minimas a partir da origem" << endl;
-    cout << "Vertice de origem: " << this->origem << endl;
+    cout << "Vertice de origem: " << this->origem +1 << endl;
     
     for(int i = 0; i < this->nV; i++){
         if(i != this->origem){
-            cout << "Destino: " << i << " ---- Distancia minima: " << this->distancias[i] << endl;
+            cout << "Destino: " << i+1 << " ---- Distancia minima: " << this->distancias[i] << endl;
         }
     }
 }

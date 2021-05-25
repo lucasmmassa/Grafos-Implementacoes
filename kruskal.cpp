@@ -50,7 +50,7 @@ void Grafo::imprimirResultado(){
 
     list<intPair>::iterator i;
     for(i = this->resultado.begin(); i != this->resultado.end(); i++){
-        cout << "(" << (*i).first << "," << (*i).second << ")" << endl;
+        cout << "(" << (*i).first +1 << "," << (*i).second +1 << ")" << endl;
     }
 
     cout << "\nPeso da arvore geradora minima:" << endl;

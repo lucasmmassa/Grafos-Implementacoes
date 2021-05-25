@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#define infinito 9999999999999
+#define infinito 999999999
 typedef pair<int,int> intPair;
 
 // definindo a estrutura do grafo

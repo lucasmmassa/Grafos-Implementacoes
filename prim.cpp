@@ -8,7 +8,7 @@
 # include <iterator>
 
 using namespace std;
-#define infinito 9999999999999
+#define infinito 999999999
 typedef pair<int,int> intPair;
 
 // definindo a estrtutura do grafo
@@ -55,7 +55,7 @@ void Grafo::imprimirResultado(){
     for(int i = 0; i < this->nV; i++){
         if(this->resultado[i] != -1){
             pesoTotal += this->pesos[i];
-            cout << "(" << resultado[i] << "," << i << ")" << endl;
+            cout << "(" << resultado[i]+1 << "," << i+1 << ")" << endl;
         }
     }
 
