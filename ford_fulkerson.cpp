@@ -130,18 +130,21 @@ void Grafo::ford_fulkerson(int s, int t){
         
         // Será feito o caminho inverso que foi salvo no parente (de t - sumidouro até s - fonte)
         // ao executar o bfs, para saber qual foi o menor fluxo obtido
-        // no caminho aumentativo (augmented path).
+        // no caminho possível que foi retornado do bfs.
         for (int v = t; v != s; v = parente[v]) {
             int u = parente[v];
             fluxo_caminho = min(fluxo_caminho, residual[u][v]);
         }
 
+        // A ideia nesse ponto é dada uma aresta (u,v) e a aresta (v,u), obtida do caminho em 'parente'
+        // subtrair de (u,v) o fluxo mínimo obtido ao logo do caminho e somar essa quantia em (v,u)
         for (int v = t; v != s; v = parente[v]) {
             int u = parente[v];
             residual[u][v] -= fluxo_caminho;
             residual[v][u] += fluxo_caminho;
         }
- 
+        
+        // O fluxo máximo será a soma dos fluxos mínimos obtidos nos caminhos possíveis
         fluxo_max += fluxo_caminho;
     }
 
