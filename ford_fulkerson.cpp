@@ -33,7 +33,7 @@ class Grafo{
 
     void setAdjacente(list<intPair> *adjacentes);
 
-    bool bfs(int **fluxo, int s, int t, int parent[]);
+    bool bfs(int **residual, int s, int t, int parent[]);
 
     void ford_fulkerson(int s, int t);
 
@@ -56,7 +56,7 @@ void Grafo::setAdjacente(list<intPair> *adjacentes){
     this->adjacentes = adjacentes;
 }
 
-bool Grafo::bfs(int **fluxo, int s, int t, int parente[]){
+bool Grafo::bfs(int **residual, int s, int t, int parente[]){
 
     bool visitado[this->nV];
 
@@ -73,7 +73,7 @@ bool Grafo::bfs(int **fluxo, int s, int t, int parente[]){
         fila.pop();
 
         for (int v = 0; v < this->nV; v++){
-            if(visitado[v] == false && fluxo[u][v] > 0){
+            if(visitado[v] == false && residual[u][v] > 0){
 
                 parente[v] = u;
 
@@ -99,14 +99,14 @@ void Grafo::imprimirResultado(){
 // definindo a função ford_fulkerson
 void Grafo::ford_fulkerson(int s, int t){
 
-    int **fluxo = new int *[nV];
+    int **residual = new int *[nV];
     int fluxo_max = 0;
 
-    for(int i=0;i< nV; i++) fluxo[i] = new int[nV];
+    for(int i=0;i< nV; i++) residual[i] = new int[nV];
 
     for (int i = 0; i < nV; i++){
         for (int j = 0; j < nV; j++){
-            fluxo[i][j] = 0;
+            residual[i][j] = 0;
         }
     }
 
@@ -114,25 +114,25 @@ void Grafo::ford_fulkerson(int s, int t){
 
     for(int i = 0; i < nV; i++){
         for(j = this->adjacentes[i].begin(); j != this->adjacentes[i].end(); j++){
-            fluxo[i][(*j).first] = (*j).second;
+            residual[i][(*j).first] = (*j).second;
         }
     }
 
     int parente[this->nV];
 
-    while(bfs(fluxo, s, t, parente)){
+    while(bfs(residual, s, t, parente)){
 
         int fluxo_caminho = INT_MAX;
 
         for (int v = t; v != s; v = parente[v]) {
             int u = parente[v];
-            fluxo_caminho = min(fluxo_caminho, fluxo[u][v]);
+            fluxo_caminho = min(fluxo_caminho, residual[u][v]);
         }
 
         for (int v = t; v != s; v = parente[v]) {
             int u = parente[v];
-            fluxo[u][v] -= fluxo_caminho;
-            fluxo[v][u] += fluxo_caminho;
+            residual[u][v] -= fluxo_caminho;
+            residual[v][u] += fluxo_caminho;
         }
  
         fluxo_max += fluxo_caminho;
