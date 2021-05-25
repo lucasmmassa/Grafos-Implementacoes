@@ -133,12 +133,12 @@ void Grafo::prim(){
     this->pesos = custo;
 }
 
-int main(){
+int main(int argc, char **argv){
 
     int n_de_vertices, n_arestas, u,v,c;
 
     ifstream arquivo;
-    arquivo.open("data.txt");
+    arquivo.open(argv[1]);
 
     arquivo >> n_de_vertices >> n_arestas;
 
