@@ -48,6 +48,28 @@ Saída: lista das arestas pertencentes à árvore geradora mínima no formato:
 seguida do peso total da árvore.
 ````
 
+Para compilar o código, caso esteja em um sistema Linux, basta estar no diretório clonado deste repositório e fazer uso do makefile:
+````
+make prim
+````
+ou, caso prefira, digitar no terminal:
+````
+g++ prim.cpp -o prim
+````
+Para executar o código compilado, basta estar no mesmo diretório e digitar no terminal:
+````
+./prim <nome do arquivo contendo o grafo>
+````
+
+Caso esteja no Windows, basta compilar no cmd através do comando:
+````
+g++ prim.cpp -o prim.exe
+````
+e executar pelo comando:
+````
+.\prim.exe <nome do arquivo contendo o grafo>
+````
+
 ## Algotimo de Kruskal
 
 Para o algoritmo de Kruskal temos a seguinte descrição:
@@ -65,7 +87,27 @@ Saída: lista das arestas pertencentes à árvore geradora mínima no formato:
 
 seguida do peso total da árvore.
 ````
+Para compilar o código, caso esteja em um sistema Linux, basta estar no diretório clonado deste repositório e fazer uso do makefile:
+````
+make kruskal
+````
+ou, caso prefira, digitar no terminal:
+````
+g++ kruskal.cpp -o kruskal
+````
+Para executar o código compilado, basta estar no mesmo diretório e digitar no terminal:
+````
+./kruskal <nome do arquivo contendo o grafo>
+````
 
+Caso esteja no Windows, basta compilar no cmd através do comando:
+````
+g++ kruskal.cpp -o kruskal.exe
+````
+e executar pelo comando:
+````
+.\kruskal.exe <nome do arquivo contendo o grafo>
+````
 ## Algoritmo de Dijkstra
 
 Para o algoritmo de Dijkstra temos a seguinte descrição:
@@ -82,7 +124,27 @@ destino ---- distância
 .
 .
 ```` 
+Para compilar o código, caso esteja em um sistema Linux, basta estar no diretório clonado deste repositório e fazer uso do makefile:
+````
+make dijkstra
+````
+ou, caso prefira, digitar no terminal:
+````
+g++ dijkstra.cpp -o dijkstra
+````
+Para executar o código compilado, basta estar no mesmo diretório e digitar no terminal:
+````
+./dijkstra <nome do arquivo contendo o grafo>
+````
 
+Caso esteja no Windows, basta compilar no cmd através do comando:
+````
+g++ dijkstra.cpp -o dijkstra.exe
+````
+e executar pelo comando:
+````
+.\dijkstra.exe <nome do arquivo contendo o grafo>
+````
 ## Algoritmo de Ford-Fulkerson
 
 Para o algoritmo de Ford-Fulkerson temos a seguinte descrição:
@@ -94,3 +156,24 @@ Vale salientar que o primeiro vértice v1 sempre será considerado como fonte e 
 ````
 Saída: fluxo máximo entre fonte e sumidouro do grafo direcionado dado na entrada.
 ```` 
+Para compilar o código, caso esteja em um sistema Linux, basta estar no diretório clonado deste repositório e fazer uso do makefile:
+````
+make ff
+````
+ou, caso prefira, digitar no terminal:
+````
+g++ ford_fulkerson.cpp -o ford_fulkerson
+````
+Para executar o código compilado, basta estar no mesmo diretório e digitar no terminal:
+````
+./ford_fulkerson <nome do arquivo contendo o grafo>
+````
+
+Caso esteja no Windows, basta compilar no cmd através do comando:
+````
+g++ ford_fulkerson.cpp -o ford_fulkerson.exe
+````
+e executar pelo comando:
+````
+.\ford_fulkerson.exe <nome do arquivo contendo o grafo>
+````
