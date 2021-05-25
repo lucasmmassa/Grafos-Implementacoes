@@ -56,6 +56,7 @@ void Grafo::setAdjacente(list<intPair> *adjacentes){
     this->adjacentes = adjacentes;
 }
 
+// Função que realiza uma busca em largura considerando a capacidade de fluxo atual do grafo residual
 bool Grafo::bfs(int **residual, int s, int t, int parente[]){
 
     bool visitado[this->nV];
@@ -63,6 +64,7 @@ bool Grafo::bfs(int **residual, int s, int t, int parente[]){
     for (int i = 0; i < nV; ++i) visitado[i] = false;
 
     queue<int> fila;
+    // Sempre iniciando com o nó fonte
     fila.push(s);
     visitado[s] = true;
     parente[s] = -1;
@@ -73,21 +75,20 @@ bool Grafo::bfs(int **residual, int s, int t, int parente[]){
         fila.pop();
 
         for (int v = 0; v < this->nV; v++){
+            //Nesse ponto é checado se o nó já foi visitado e
+            // se ainda é possível aumentar o fluxo na aresta e=(u,v)
             if(visitado[v] == false && residual[u][v] > 0){
-
+                
                 parente[v] = u;
-
+                // Se foi possível atingir o nó sumidouro retornar verdadeiro
                 if(v==t){
                     return true;
                 }
-
                 fila.push(v);
                 visitado[v] = true;
             }
-        }
-        
-    }
-    
+        }      
+    }    
     return false;
 }
 
@@ -99,6 +100,7 @@ void Grafo::imprimirResultado(){
 // definindo a função ford_fulkerson
 void Grafo::ford_fulkerson(int s, int t){
 
+    // Grafo residual que será alterado a cada iteração
     int **residual = new int *[nV];
     int fluxo_max = 0;
 
@@ -111,7 +113,8 @@ void Grafo::ford_fulkerson(int s, int t){
     }
 
     list<intPair>::iterator j;
-
+    
+    // Realizando a cópia das capacidade de fluxo do grafo original
     for(int i = 0; i < nV; i++){
         for(j = this->adjacentes[i].begin(); j != this->adjacentes[i].end(); j++){
             residual[i][(*j).first] = (*j).second;
@@ -119,11 +122,15 @@ void Grafo::ford_fulkerson(int s, int t){
     }
 
     int parente[this->nV];
-
+    
+    // Enquanto a busca em bfs do nó fonte para o sumidouro for possível
     while(bfs(residual, s, t, parente)){
 
         int fluxo_caminho = INT_MAX;
-
+        
+        // Será feito o caminho inverso que foi salvo no parente (de t - sumidouro até s - fonte)
+        // ao executar o bfs, para saber qual foi o menor fluxo obtido
+        // no caminho aumentativo (augmented path).
         for (int v = t; v != s; v = parente[v]) {
             int u = parente[v];
             fluxo_caminho = min(fluxo_caminho, residual[u][v]);
@@ -142,7 +149,8 @@ void Grafo::ford_fulkerson(int s, int t){
 }
 
 int main(int argc, char **argv){
-
+    
+    // Inicializando o grafo
     int n_de_vertices, n_arestas, u,v,c;
 
     ifstream arquivo;
