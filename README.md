@@ -26,7 +26,7 @@ u v p
 
 até serem inseridas as m arestas
 ````
-Vale salientar que todos os valores contidos na entrada devem ser numeros inteiros e que os vértices sã contados a partir do 1, não do 0. Além disso, todos os algoritmos implementados consideram que o grafo dado na entrada é não direcionado, exceto o de Ford-Fulkerson.
+Vale salientar que todos os valores contidos na entrada (n,m,u,v,p) devem ser números inteiros e que os vértices são contados a partir do 1, não do 0. Além disso, todos os algoritmos implementados consideram que o grafo dado na entrada é não direcionado, exceto o de Ford-Fulkerson.
 
 Abaixo seguem mais alguns detalhes a respeito da entrada e saída, além de como compilar e executar os códigos.
 
