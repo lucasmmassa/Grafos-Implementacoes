@@ -112,7 +112,7 @@ e executar pelo comando:
 
 Para o algoritmo de Dijkstra temos a seguinte descrição:
 ````
-Entrada: grafo não direcionado em arquivo de texto, no formato apresentado.
+Entrada: grafo, direcionado ou não, em arquivo de texto no formato apresentado.
 ````
 Vale salientar que o primeiro vértice v1 sempre será considerado como origem na presente implementação.
 ````
@@ -150,7 +150,7 @@ e executar pelo comando:
 Para o algoritmo de Ford-Fulkerson temos a seguinte descrição:
 
 ````
-Entrada: grafo não direcionado em arquivo de texto, no formato apresentado. Os pesos serão considerados como as capacidades das arestas.
+Entrada: grafo direcionado em arquivo de texto, no formato apresentado. Os pesos serão considerados como as capacidades das arestas.
 ````
 Vale salientar que o primeiro vértice v1 sempre será considerado como fonte e o último vértice vm como sumidouro na presente implementação. Além disso, é importante ressaltar que foi usada a abordagem de Edmonds–Karp, através de uma busca em largura para encontrar os caminhos presentes no residual.
 ````
