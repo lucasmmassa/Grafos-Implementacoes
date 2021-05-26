@@ -58,7 +58,7 @@ void Grafo::imprimirResultado(){
     }
 }
 
-// definindo o algoritmo de Prim
+// definindo o algoritmo de Dijkstra
 void Grafo::dijkstra(int origem){
 
     // inicializa o vetor de distancias
